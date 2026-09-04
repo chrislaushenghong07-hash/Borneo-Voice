@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borneo Voice - Melanau Translator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 全局基础样式 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 15px;
+        }
+
+        /* 🚀 精简版出场启动开屏 (Splash Screen) */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            opacity: 1;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-content {
+            text-align: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .splash-logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .splash-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            color: #ffffff;
+        }
+
+        /* 旋转 Loading 动画 */
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #00aeef;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-text {
+            font-size: 13px;
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 📱 主界面卡片 */
+        .app-card {
+            width: 100%;
+            max-width: 700px;
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        header .subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        /* 顶部 Tab 切换菜单 */
+        .tab-menu {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            font-weight: 700;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 13px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #00aeef;
+            border-bottom-color: #00aeef;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 语言选择栏 */
+        .lang-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        select {
+            flex: 1;
+            padding: 10px;
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .arrow {
+            color: #00aeef;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* 文本框与布局 */
+        .text-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .text-boxes {
+                flex-direction: row;
+            }
+        }
+
+        .box {
+            flex: 1;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            resize: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* 按键样式 */
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        button, .file-label {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 14px;
+        }
+
+        .primary-btn {
+            background: #00aeef;
+            color: #ffffff;
+        }
+
+        .secondary-btn {
+            background: #334155;
+            color: #ffffff;
+        }
+
+        button:hover, .file-label:hover {
+            opacity: 0.9;
+        }
+
+        /* 相机与对话专用样式 */
+        .placeholder-box {
+            padding: 40px 20px;
+            background: #0f172a;
+            border: 2px dashed #334155;
+            border-radius: 8px;
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .chat-box {
+            height: 200px;
+            overflow-y: auto;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-message {
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 85%;
+            font-size: 13px;
+        }
+
+        .chat-message.system {
+            background: #334155;
+            color: #cbd5e1;
+            align-self: center;
+            text-align: center;
+        }
+
+        .chat-message.user {
+            background: #00aeef;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-message.melanau {
+            background: #10b981;
+            color: white;
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🚀 开屏启动页 (仅包含 Logo, Borneo Voice 和 Loading) -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="./logo.png" alt="Borneo Voice Logo" class="splash-logo">
+            <h1 class="splash-title">BORNEO VOICE</h1>
+            <div class="spinner"></div>
+            <p class="loading-text">Loading...</p>
+        </div>
+    </div>
+
+    <!-- 📱 主界面卡片 -->
+    <div class="app-card">
+        <header>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <img src="./logo.png" alt="Borneo Voice Logo" style="max-width: 200px; height: auto; display: block; margin: 0 auto;">
+            </div>
+            <p class="subtitle">Borneo Voice - Bahasa Melanau Translator / 密兰诺语翻译助手</p>
+        </header>
+
+        <!-- 顶部功能 Tab -->
+        <div class="tab-menu">
+            <button class="tab-btn active" data-tab="text-tab">Text / 文本</button>
+            <button class="tab-btn" data-tab="camera-tab">Camera / 相机</button>
+            <button class="tab-btn" data-tab="conversation-tab">Conversation / 对话</button>
+        </div>
+
+        <!-- 语言选择栏 -->
+        <div class="lang-selector">
+            <select id="source-lang">
+                <option value="ms">Malay / 马来语</option>
+                <option value="zh">Chinese / 华语</option>
+                <option value="en">English / 英语</option>
+            </select>
+
+            <span class="arrow">➔</span>
+
+            <select id="target-lang" disabled>
+                <option value="mel">Bahasa Melanau / 密兰诺语</option>
+            </select>
+        </div>
+
+        <!-- TAB 1: 文本翻译 -->
+        <div id="text-tab" class="tab-content active">
+            <div class="text-boxes">
+                <div class="box">
+                    <textarea id="source-text" placeholder="Enter text here... / 请在此输入文字..."></textarea>
+                </div>
+                <div class="box">
+                    <textarea id="target-text" placeholder="Translation result... / 翻译结果..." readonly></textarea>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="translate-btn" class="primary-btn">Translate / 翻译</button>
+                <button id="copy-btn" class="secondary-btn">Copy / 复制</button>
+            </div>
+        </div>
+
+        <!-- TAB 2: 相机/拍照翻译 -->
+        <div id="camera-tab" class="tab-content">
+            <div class="camera-container">
+                <video id="webcam" autoplay playsinline style="display:none; width: 100%; border-radius: 8px;"></video>
+                <div id="camera-placeholder" class="placeholder-box">
+                    📷 Tap "Open Camera" or upload an image to translate text.<br>
+                    点击“打开相机”或上传图片以翻译文本。
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="start-camera-btn" class="primary-btn">Open Camera / 打开相机</button>
+                <label for="image-upload" class="secondary-btn file-label" style="text-align: center; display: inline-block;">
+                    Upload Image / 上传图片
+                </label>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="box" style="margin-top: 15px;">
+                <textarea id="camera-result" placeholder="OCR & Translation Result / 识别与翻译结果..." readonly></textarea>
+            </div>
+        </div>
+
+        <!-- TAB 3: 对话/语音翻译 -->
+        <div id="conversation-tab" class="tab-content">
+            <div class="chat-box" id="chat-history">
+                <div class="chat-message system">
+                    💡 Click a microphone button below to start speaking.<br>
+                    点击下方麦克风按钮开始对话。
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="mic-source-btn" class="primary-btn">🎤 Speak Source / 源语言说话</button>
+                <button id="mic-target-btn" class="secondary-btn">🎤 Speak Melanau / 密兰诺语说话</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ⚙️ 核心控制脚本 (JavaScript) -->
+    <script>
+        // 1. 开屏动画自动淡出 (1.8秒)
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splashScreen = document.getElementById('splash-screen');
+                if (splashScreen) splashScreen.classList.add('fade-out');
+            }, 1800);
+        });
+
+        // 2. 词汇数据库
+        const dictionary = {
+            "ms-mel": { "saya": "akui", "makan": "kuman", "minum": "tuteg", "tidur": "tudui", "apa khabar": "muku nuek", "terima kasih": "makasih" },
+            "zh-mel": { "我": "akui", "你": "ka'u", "吃饭": "kuman", "喝水": "tuteg", "睡觉": "tudui", "你好": "muku nuek", "谢谢": "makasih" },
+            "en-mel": { "i": "akui", "you": "ka'u", "eat": "kuman", "drink": "tuteg", "sleep": "tudui", "hello": "muku nuek", "thank you": "makasih" }
+        };
+
+        // 3. Tab 切换逻辑
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // 4. 翻译引擎
+        const sourceText = document.getElementById('source-text');
+        const targetText = document.getElementById('target-text');
+        const sourceLang = document.getElementById('source-lang');
+
+        function translateWord(text) {
+            const cleanText = text.trim().toLowerCase();
+            const mode = `${sourceLang.value}-mel`;
+            const currentDict = dictionary[mode];
+
+            if (currentDict && currentDict[cleanText]) {
+                return currentDict[cleanText];
+            } else if (currentDict) {
+                let words = cleanText.split(" ");
+                let translated = words.map(w => currentDict[w] || w);
+                return translated.join(" ");
+            }
+            return "[Word not found / 词库未收录]";
+        }
+
+        document.getElementById('translate-btn').addEventListener('click', () => {
+            if (!sourceText.value.trim()) return alert('Please enter text / 请输入内容');
+            targetText.value = translateWord(sourceText.value);
+        });
+
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            if (targetText.value) {
+                navigator.clipboard.writeText(targetText.value);
+                alert('Copied! / 已复制！');
+            }
+        });
+
+        // 5. 相机与语音交互
+        document.getElementById('start-camera-btn').addEventListener('click', async () => {
+            try {
+                const webcam = document.getElementById('webcam');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                webcam.srcObject = stream;
+                webcam.style.display = 'block';
+                document.getElementById('camera-placeholder').style.display = 'none';
+            } catch (err) {
+                alert("Camera access denied / 无法访问相机: " + err.message);
+            }
+        });
+
+        document.getElementById('image-upload').addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                document.getElementById('camera-result').value = `Selected: ${e.target.files[0].name}\nTranslating...\nResult: hello -> muku nuek`;
+            }
+        });
+    </script>
+</body>
+</html>
