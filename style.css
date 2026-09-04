@@ -1,0 +1,337 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+:root {
+    --bg-dark: #2c3845;       /* Logo 背景深灰蓝 */
+    --card-bg: #232d38;     /* 卡片稍深一号灰蓝，产生层次感 */
+    --brand-blue: #00aeef;    /* Logo 犀鸟天蓝色 */
+    --input-bg: #1a222a;     /* 输入框深色背景 */
+    --text-white: #ffffff;    /* 主文字白色 */
+    --text-light: #9aa9b9;    /* 辅助文字浅灰 */
+}
+
+body {
+    background-color: var(--bg-dark);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.app-card {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 750px;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+}
+
+.lang-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+select {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #3a4857;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    background: var(--input-bg);
+    color: var(--text-white);
+    font-weight: 600;
+}
+
+select:focus {
+    border-color: var(--brand-blue);
+}
+
+.icon-btn {
+    background: #1a222a;
+    border: 1px solid #3a4857;
+    padding: 10px 16px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--brand-blue);
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background: var(--brand-blue);
+    color: #ffffff;
+}
+
+.text-boxes {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+    .text-boxes {
+        flex-direction: column;
+    }
+}
+
+.box {
+    flex: 1;
+}
+
+textarea {
+    width: 100%;
+    height: 160px;
+    padding: 15px;
+    border: 1px solid #3a4857;
+    border-radius: 12px;
+    font-size: 16px;
+    resize: none;
+    outline: none;
+    background-color: var(--input-bg);
+    color: var(--text-white);
+}
+
+textarea:focus {
+    border-color: var(--brand-blue);
+}
+
+textarea::placeholder {
+    color: var(--text-light);
+}
+
+#target-text {
+    background-color: #151b21;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+button.primary-btn, button.secondary-btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.primary-btn {
+    background-color: var(--brand-blue);
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #0093cb;
+}
+
+.secondary-btn {
+    background-color: #3a4857;
+    color: var(--text-white);
+}
+
+.secondary-btn:hover {
+    background-color: #4a5a6d;
+}
+/* 顶部功能切换标签栏 (Tabs) */
+.tab-menu {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-btn.active {
+    color: var(--brand-blue, #0056b3);
+    border-bottom-color: var(--brand-blue, #0056b3);
+}
+
+/* 标签页内容隐藏与显示 */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* 占位符与相机容器 */
+.placeholder-box {
+    padding: 40px 20px;
+    background: #f8f9fa;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    text-align: center;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+/* 对话聊天框样式 */
+.chat-box {
+    height: 220px;
+    overflow-y: auto;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 80%;
+    font-size: 14px;
+}
+
+.chat-message.system {
+    background: #e9ecef;
+    color: #495057;
+    align-self: center;
+    text-align: center;
+    font-size: 12px;
+}
+
+.chat-message.user {
+    background: #0056b3;
+    color: white;
+    align-self: flex-end;
+}
+
+.chat-message.melanau {
+    background: #28a745;
+    color: white;
+    align-self: flex-start;
+}
+
+.conversation-actions {
+    display: flex;
+    gap: 10px;
+}
+/* 🚀 出场开屏页面 (Splash Screen) 样式 */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #003366 0%, #0056b3 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+/* 隐藏开屏动画的样式类 */
+#splash-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.splash-content {
+    text-align: center;
+    color: #ffffff;
+    padding: 20px;
+    animation: fadeInZoom 1s ease-out;
+}
+
+.splash-logo {
+    max-width: 160px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+}
+
+.splash-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.splash-subtitle {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* 旋转加载 Icon */
+.spinner {
+    width: 36px;
+    height: 36px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #ffffff;
+    border-radius: 50%;
+    margin: 0 auto 12px auto;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    font-size: 12px;
+    opacity: 0.8;
+    letter-spacing: 1px;
+}
+
+/* 动画帧定义 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInZoom {
+    0% {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
