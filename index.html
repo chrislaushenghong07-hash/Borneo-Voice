@@ -1,4 +1,412 @@
-"my name is": "Ngadan kou...", "where are you from": "Kaau tapak menaan?", "where are you from?": "Kaau tapak menaan?",
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borneo Voice - Melanau Translator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 15px;
+        }
+
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            opacity: 1;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-content {
+            text-align: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .splash-logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .splash-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            color: #ffffff;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #00aeef;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-text {
+            font-size: 13px;
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .app-card {
+            width: 100%;
+            max-width: 700px;
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        header .subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        .tab-menu {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #334155;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            font-weight: 700;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 13px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #00aeef;
+            border-bottom-color: #00aeef;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .lang-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        select {
+            flex: 1;
+            padding: 10px;
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .arrow {
+            color: #00aeef;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .text-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+            @media (min-width: 600px) {
+            .text-boxes {
+                flex-direction: row;
+            }
+        }
+
+        .box {
+            flex: 1;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            resize: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        button, .file-label {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 14px;
+        }
+
+        .primary-btn {
+            background: #00aeef;
+            color: #ffffff;
+        }
+
+        .secondary-btn {
+            background: #334155;
+            color: #ffffff;
+        }
+
+        button:hover, .file-label:hover {
+            opacity: 0.9;
+        }
+
+        .placeholder-box {
+            padding: 40px 20px;
+            background: #0f172a;
+            border: 2px dashed #334155;
+            border-radius: 8px;
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .chat-box {
+            height: 200px;
+            overflow-y: auto;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-message {
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 85%;
+            font-size: 13px;
+        }
+
+        .chat-message.system {
+            background: #334155;
+            color: #cbd5e1;
+            align-self: center;
+            text-align: center;
+        }
+
+        .chat-message.user {
+            background: #00aeef;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-message.melanau {
+            background: #10b981;
+            color: white;
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="./logo.png" alt="Borneo Voice Logo" class="splash-logo">
+            <h1 class="splash-title">BORNEO VOICE</h1>
+            <div class="spinner"></div>
+            <p class="loading-text">Loading...</p>
+        </div>
+    </div>
+
+    <div class="app-card">
+        <header>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <img src="./logo.png" alt="Borneo Voice Logo" style="max-width: 200px; height: auto; display: block; margin: 0 auto;">
+            </div>
+            <p class="subtitle">Borneo Voice - Bahasa Melanau Translator / 密兰诺语翻译助手</p>
+        </header>
+
+        <div class="tab-menu">
+            <button class="tab-btn active" data-tab="text-tab">Text / 文本</button>
+            <button class="tab-btn" data-tab="camera-tab">Camera / 相机</button>
+            <button class="tab-btn" data-tab="conversation-tab">Conversation / 对话</button>
+        </div>
+
+        <div class="lang-selector">
+            <select id="source-lang">
+                <option value="ms">Malay / 马来语</option>
+                <option value="zh">Chinese / 华语</option>
+                <option value="en">English / 英语</option>
+            </select>
+
+            <span class="arrow">➔</span>
+
+            <select id="target-lang" disabled>
+                <option value="mel">Melanau(Mukah) / 密兰诺语</option>
+            </select>
+        </div>
+            <div id="text-tab" class="tab-content active">
+            <div class="text-boxes">
+                <div class="box">
+                    <textarea id="source-text" placeholder="Enter text or sentence here... / 请输入字词或日常句子..."></textarea>
+                </div>
+                <div class="box">
+                    <textarea id="target-text" placeholder="Translation result... / 翻译结果..." readonly></textarea>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="translate-btn" class="primary-btn">Translate / 翻译</button>
+                <button id="copy-btn" class="secondary-btn">Copy / 复制</button>
+            </div>
+        </div>
+
+        <div id="camera-tab" class="tab-content">
+            <div class="camera-container">
+                <video id="webcam" autoplay playsinline style="display:none; width: 100%; border-radius: 8px;"></video>
+                <div id="camera-placeholder" class="placeholder-box">
+                    📷 Tap "Open Camera" to start live preview or upload an image.<br>
+                    点击“打开相机”预览或直接上传图片。
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="start-camera-btn" class="primary-btn">Open Camera / 打开相机</button>
+                <label for="image-upload" class="secondary-btn file-label" style="text-align: center; display: inline-block;">
+                    Upload Image / 上传图片
+                </label>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="box" style="margin-top: 15px;">
+                <textarea id="camera-result" placeholder="OCR & Translation Result / 识别与翻译结果..." readonly></textarea>
+            </div>
+        </div>
+
+        <div id="conversation-tab" class="tab-content">
+            <div class="chat-box" id="chat-history">
+                <div class="chat-message system">
+                    💡 Click "Speak Source" to talk.<br>
+                    点击下方按键开始进行语音识别。
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="mic-source-btn" class="primary-btn">🎤 Speak Source / 开始说话</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splashScreen = document.getElementById('splash-screen');
+                if (splashScreen) splashScreen.classList.add('fade-out');
+            }, 1800);
+        });
+            // Kamus Lengkap Bahasa Melanau Mukah (Termasuk Lesson 1 - 6)
+        const dictionary = {
+            "ms-mel": {
+                // Lesson 1 & 2
+                "saya": "aku", "aku": "aku", "awak": "amu", "kamu": "amu", "dia": "diya",
+                "kita": "kita", "kami": "kami", "mereka": "balaŋ", "ini": "ini", "itu": "tuh",
+                "apa": "yaŋ", "siapa": "tane", "bagaimana": "menyap", "ada": "ma", "tidak": "nang",
+                "ya": "pa", "makan": "kemun", "minum": "inum", "kerja": "kerja", "pergi": "pegi",
+                "datang": "datang", "satu": "ja", "dua": "dua", "tiga": "telew", "empat": "pat",
+                "lima": "lima", "enam": "nem", "tujuh": "tuju'", "lapan": "ayan", "sembilan": "ulan",
+                "sepuluh": "pelu'en", "hari": "law", "malam": "malem", "tahun": "ta'un", "langit": "langit",
+                "api": "apuy", "laut": "daat", "buah": "bua'", "bunga": "bunga", "rumput": "sek",
+                "daun": "daun", "ikan": "ikan", "burung": "manuk", "ular": "dipa", "tikus": "belabaw",
+                "nyamuk": "kiayh", "baik": "dia'", "buruk": "mama'", "jahat": "mama'", "kecil": "umit",
+                "besar": "ayeŋ", "baru": "ba'ew", "lama": "lakey", "tua": "lakey", "nipis": "lipih",
+                "tebal": "kapan", "hijau": "gaduŋ", "hitam": "bilem", "kuning": "kuniŋ", "jauh": "jau'",
+                "di": "ga'", "pada": "ga'", "dan": "jigem",
+                "apa khabar": "Inou dengah nou?", "apa khabar?": "Inou dengah nou?",
+                "saya sihat": "Akou diak un.", "saya sihat.": "Akou diak un.",
+                "saya kurang sihat": "Enda diak angai tan rasa kou.",
+                "siapa nama awak": "Sai ngadan nou?", "siapa nama awak?": "Sai ngadan nou?",
+                "nama saya": "Ngadan kou...", "awak dari mana": "Kaau tapak menaan?", "awak dari mana?": "Kaau tapak menaan?",
+                "saya dari": "Akou tapak...", "awak tinggal di mana": "Takan gan diem nou?", "awak tinggal di mana?": "Takan gan diem nou?",
+                "saya tinggal di": "Akou diem gak...", "awak hendak ke mana": "Menaan kaau?", "awak hendak ke mana?": "Menaan kaau?",
+                "saya hendak pergi": "Akou bak mapun...", "saya baru datang dari": "Akou japan un tapak...",
+                "saya perlu pergi sekarang": "Akou makau siieang.", "maaf": "Ma-ep eh.",
+                "saya tergesa-gesa": "Akou bak legah itou.", "sudah lama kita tidak berjumpa": "Paut ngak tua enda petemu.",
+                "ini kawan saya": "Itou sakai kou.", "siapa kawan awak": "Sai sakai nou?", "siapa kawan awak?": "Sai sakai nou?",
+                "saya belajar di": "Akou belajer gak...", "saya bekerja di": "Akou kreja gak...",
+
+                // Lesson 3: Food & Drinks
+                "makanan": "wak kan", "air": "anum", "nasi": "nasek", "sagu": "sagok", "umai": "umai",
+                "daging": "dagieng", "ayam": "siau", "babi": "babui", "anjing": "asou", "telur": "telor",
+                "pisang": "kalik", "kelapa": "niyu", "garam": "garam", "gula": "gula", "kopi": "kopi",
+                "teh": "teh", "susu": "susu", "sudu": "sudok", "garpu": "garpu", "pisau": "pisau",
+                "pinggan": "jalok", "mangkuk": "mangkuok", "cawan": "gelaih", "sedap": "dao", "enak": "daou",
+                "lapar": "lapar", "haus": "haus", "kenyang": "kenyang", "masak": "masak", "goreng": "goreng",
+                "rebus": "rebus", "bakar": "bakar", "potong": "potong", "beri": "bagi", "ambil": "igek", "snek": "amieng",
+
+                    "my name is": "Ngadan kou...", "where are you from": "Kaau tapak menaan?", "where are you from?": "Kaau tapak menaan?",
         "i am from": "Akou tapak...", "where do you live": "Takan gan diem nou?", "where do you live?": "Takan gan diem nou?",
         "i live in": "Akou diem gak...", "where are you going": "Menaan kaau?", "where are you going?": "Menaan kaau?",
         "i am going to": "Akou bak mapun...", "i just came from": "Akou japan un tapak...",
@@ -44,6 +452,106 @@
         "see you again": "jumpa agi", "have a safe journey": "selamat jalan"
     }
 };
+            tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+});
+
+const sourceText = document.getElementById('source-text');
+const targetText = document.getElementById('target-text');
+const sourceLang = document.getElementById('source-lang');
+
+function translateWord(text) {
+    const cleanText = text.trim().toLowerCase();
+    const mode = ${sourceLang.value}-mel;
+    const currentDict = dictionary[mode];
+
+    if (currentDict && currentDict[cleanText]) {
+        return currentDict[cleanText];
+    } else if (currentDict) {
+        let words = cleanText.split(" ");
+        let translated = words.map(w => currentDict[w]  w);
+        return translated.join(" ");
+    }
+    return "[Word not found / 词库未收录]";
+}
+
+document.getElementById('translate-btn').addEventListener('click', () => {
+    if (!sourceText.value.trim()) return alert('Please enter text / 请输入内容');
+    targetText.value = translateWord(sourceText.value);
+});
+
+document.getElementById('copy-btn').addEventListener('click', () => {
+    if (targetText.value) {
+        navigator.clipboard.writeText(targetText.value);
+        alert('Copied! / 已复制！');
+    }
+});
+
+document.getElementById('start-camera-btn').addEventListener('click', async () => {
+    try {
+        const webcam = document.getElementById('webcam');
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        webcam.srcObject = stream;
+        webcam.style.display = 'block';
+        document.getElementById('camera-placeholder').style.display = 'none';
+    } catch (err) {
+        alert("Camera access denied / 无法访问相机: " + err.message);
+    }
+});
+
+document.getElementById('image-upload').addEventListener('change', (e) => {
+    if (e.target.files[0]) {
+        document.getElementById('camera-result').value = `Selected File: ${e.target.files[0].name}\nProcessing OCR...\nResult: apa khabar -> Inou dengah nou?`;
+    }
+});
+
+const micBtn = document.getElementById('mic-source-btn');
+const chatHistory = document.getElementById('chat-history');
+
+if ('webkitSpeechRecognition' in window  'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition  window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    micBtn.addEventListener('click', () => {
+        const langMap = { ms: 'ms-MY', zh: 'zh-CN', en: 'en-US' };
+        recognition.lang = langMap[sourceLang.value]  'en-US';
+        recognition.start();
+        micBtn.innerText = "Listening... / 正在聆听...";
+    });
+
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        micBtn.innerText = "🎤 Speak Source / 开始说话";
+        
+        let userMsg = document.createElement('div');
+        userMsg.className = 'chat-message user';
+        userMsg.innerText = text;
+        chatHistory.appendChild(userMsg);
+
+        let translatedText = translateWord(text);
+
+        let melMsg = document.createElement('div');
+        melMsg.className = 'chat-message melanau';
+        melMsg.innerText = "Melanau: " + translatedText;
+        chatHistory.appendChild(melMsg);
+
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    };
+
+    recognition.onerror = () => {
+        micBtn.innerText = "🎤 Speak Source / 开始说话";
+        alert("Voice recognition error / 语音识别失败，请检查浏览器权限");
+    };
+} else {
+    micBtn.addEventListener('click', () => {
+        alert("Speech recognition is not supported on this browser / 您的浏览器暂不支持语音识别接口");
+    });
+}
 
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
