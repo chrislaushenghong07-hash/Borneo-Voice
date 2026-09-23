@@ -1,73 +1,52 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borneo-Voice Melanau Mukah Translator</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- 引入开源图像 OCR 识别库 -->
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-</head>
-<body>
+"my name is": "Ngadan kou...", "where are you from": "Kaau tapak menaan?", "where are you from?": "Kaau tapak menaan?",
+        "i am from": "Akou tapak...", "where do you live": "Takan gan diem nou?", "where do you live?": "Takan gan diem nou?",
+        "i live in": "Akou diem gak...", "where are you going": "Menaan kaau?", "where are you going?": "Menaan kaau?",
+        "i am going to": "Akou bak mapun...", "i just came from": "Akou japan un tapak...",
+        "i need to go now": "Akou makau siieang.", "sorry": "Ma-ep eh.",
+        "i am in a hurry": "Akou bak legah itou.", "long time no see": "Paut ngak tua enda petemu.",
+        "this is my friend": "Itou sakai kou.", "who is your friend": "Sai sakai nou?", "who is your friend?": "Sai sakai nou?",
+        "i study at": "Akou belajer gak...", "i work at": "Akou kreja gak...",
 
-    <!-- 顶部导航栏与账号登录区 -->
-    <header class="app-header">
-        <div class="header-left">
-            <img src="logo.png" alt="Logo" class="logo">
-            <h1>Borneo-Voice</h1>
-        </div>
-        <div class="user-auth-area">
-            <span id="user-display">未登录</span>
-            <button id="open-auth-btn" class="auth-btn">注册 / 登录</button>
-            <button id="logout-btn" class="auth-btn logout" style="display: none;">退出登录</button>
-        </div>
-    </header>
+        // Lesson 3: Food & Drinks
+        "food": "wak kan", "water": "anum", "rice": "nasek", "sago": "sagok", "umai": "umai",
+        "meat": "dagieng", "chicken": "siau", "pig": "babui", "dog": "asou", "egg": "telor",
+        "banana": "kalik", "coconut": "niyu", "salt": "garam", "sugar": "gula", "coffee": "kopi",
+        "tea": "teh", "milk": "susu", "spoon": "sudok", "fork": "garpu", "knife": "pisau",
+        "plate": "jalok", "bowl": "mangkuok", "cup": "gelaih", "delicious": "dao", "tasty": "daou",
+        "hungry": "lapar", "thirsty": "haus", "full": "kenyang", "cook": "masak", "fry": "goreng",
+        "boil": "rebus", "grill": "bakar", "roast": "bakar", "cut": "potong", "give": "bagi", "take": "igek", "snack": "amieng",
 
-    <!-- 语言选择区 -->
-    <div class="lang-bar">
-        <label for="source-lang">选择源语言:</label>
-        <select id="source-lang">
-            <option value="zh">中文 (Chinese)</option>
-            <option value="ms">Malay (马来语)</option>
-            <option value="en">English (英语)</option>
-        </select>
-    </div>
+        // Lesson 4: House & Education
+        "house": "lebok", "wood": "kayew", "open the door": "ba menaweng", "door": "menaweng",
+        "inside": "lubeng", "below": "di ba'", "ceiling": "laŋit", "road": "jalan", "school": "sekolah",
+        "study": "belajer", "teacher": "guru", "student": "murid", "book": "buku", "pencil": "pensel",
+        "pen": "pen", "eraser": "pemadam", "table": "meja", "chair": "kerusi", "bag": "beg",
+        "classroom": "kelas", "write": "tulis", "read": "baca", "count": "kira", "question": "soalan",
+        "answer": "jawapan", "examination": "peperiksaan", "homework": "kerja rumah", "board": "papan",
+        "chalk": "kapur", "clock": "jam", "computer": "komputer", "telephone": "telefon", "internet": "internet",
+        "study well": "belajar baik", "good teacher": "guru baik", "friend": "sakai", "knowledge": "ilmu",
 
-    <!-- 选项卡导航 -->
-    <nav class="tab-nav">
-        <button class="tab-btn active" data-tab="text-tab">📝 文本翻译</button>
-        <button class="tab-btn" data-tab="camera-tab">📷 拍照/图片翻译</button>
-        <button class="tab-btn" data-tab="voice-tab">🎙️ 语音对话翻译</button>
-    </nav>
+        // Lesson 5: Nature & Animals
+        "forest": "guun", "lake": "danaw", "land": "tana'", "soil": "tana'", "stone": "batew", "sand": "nay",
+        "cloud": "awan", "rain": "ujan", "wind": "paŋay", "star": "biten", "moon": "bulan",
+        "earthworm": "kejiwat", "spider": "belebawa'", "louse": "kutew", "wing": "paeŋ",
+        "feather": "bulew", "tail": "tikiu", "tooth": "nyipen", "nose": "uduŋ", "tongue": "jela'",
+        "head": "ulew", "ear": "liŋa", "eye": "mata", "stomach": "guem", "sick": "pedeh", "pain": "pedeh", "sleep": "tuduy",
 
-    <main class="content-container">
-        <!-- 1. 文本翻译板块 -->
-        <section id="text-tab" class="tab-content active">
-            <div class="translator-box">
-                <textarea id="source-text" placeholder="请输入要翻译的词汇或句子..."></textarea>
-                <button id="translate-btn" class="primary-btn">翻译为 Melanau 语</button>
-                <textarea id="target-text" readonly placeholder="Melanau 翻译结果..."></textarea>
-                <button id="copy-btn" class="secondary-btn">复制结果</button>
-            </div>
-        </section>
+        // Lesson 6: Travel & Transportation
+        "walk": "makau", "run": "lari", "junction": "simpang", "bridge": "jambatan",
+        "town": "bandar", "city": "bandar", "village": "kampung", "home": "lebok", "outside": "luar",
+        "above": "atas", "left": "kiri", "right": "kanan", "near": "dekat", "car": "kereta", "bus": "bas",
+        "teksi": "teksi", "motorcycle": "motosikal", "bicycle": "basikal", "boat": "bot", "ship": "kapal",
+        "airplane": "kapal terbang", "airport": "lapangan terbang", "ticket": "tiket",
+        "driver": "pemandu", "passenger": "penumpang", "arrive": "sampai", "stop": "berhenti",
+        "fast": "cepat", "slow": "lambat", "late": "lambat", "map": "peta", "direction": "arah",
+        "see you again": "jumpa agi", "have a safe journey": "selamat jalan"
+    }
+};
 
-        <!-- 2. 图片 OCR 翻译板块 -->
-        <section id="camera-tab" class="tab-content">
-            <div class="camera-box">
-                <label for="image-upload" class="upload-btn">📁 选择/拍摄图片</label>
-                <input type="file" id="image-upload" accept="image/*">
-                <textarea id="camera-result" readonly placeholder="上传图片后，系统将自动识别图片中的文字并翻译..."></textarea>
-            </div>
-        </section>
-
-        <!-- 3. 语音对话板块 -->
-        <section id="voice-tab" class="tab-content">
-            <div class="voice-box">
-                <button id="mic-source-btn" class="mic-btn">🎤 点击开始说话</button>
-                <div id="chat-history" class="chat-history-box"></div>
-            </div>
-        </section>
-    </main>
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
 
     <!-- 注册与登录弹窗 -->
     <div id="auth-modal" class="modal" style="display:none;">
